@@ -1,0 +1,14 @@
+FROM node:current-alpine
+
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+COPY package-lock.json ./
+COPY package.json ./
+
+RUN npm install --silent
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
