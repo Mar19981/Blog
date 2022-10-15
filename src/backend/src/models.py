@@ -5,9 +5,16 @@ from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, Str
 from sqlalchemy.orm import relationship
 
 class UserType(enum.Enum):
-    admin = 0
-    editor = 1
-    standard = 2
+    admin = enum.auto()
+    editor = enum.auto()
+    standard = enum.auto()
+    
+class NewsType(enum.Enum):
+    culture = enum.auto()
+    general = enum.auto()
+    lifestyle = enum.auto()
+    science = enum.auto()
+    sport = enum.auto()
     
 class User(Base):
     __tablename__ = "user"
@@ -31,6 +38,7 @@ class News(Base):
     sysnews = Column(Integer, primary_key = True, autoincrement = True)
     title = Column(String)
     text = Column(String)
+    type = Column(Enum(NewsType), default = NewsType.general)
     create_user = Column(Integer, ForeignKey("user.sysuser"))
     update_user = Column(Integer, ForeignKey("user.sysuser"))
     create_date = Column(DateTime, default = datetime.datetime.utcnow)
