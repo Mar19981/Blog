@@ -23,77 +23,77 @@ def get_user_by_username(db: Session, username: str):
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
-def get_user_sysuser_by_username(db: Session, username: str):
-    return db.query(models.User.sysuser).filter(models.User.username == username).first()
+# def get_user_sysuser_by_username(db: Session, username: str):
+#     return db.query(models.User.sysuser).filter(models.User.username == username).first()
 
-def get_user_sysuser_by_email(db: Session, email: str):
-    return db.query(models.User.sysuser).filter(models.User.email == email).first()
+# def get_user_sysuser_by_email(db: Session, email: str):
+#     return db.query(models.User.sysuser).filter(models.User.email == email).first()
 
-def get_user_username_by_id(db: Session, sysuser: int):
-    return db.query(models.User.username).filter(models.User.sysuser == sysuser).first()
+# def get_user_username_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.username).filter(models.User.sysuser == sysuser).first()
 
-def get_user_username_by_email(db: Session, email: str):
-    return db.query(models.User.username).filter(models.User.email == email).first()
+# def get_user_username_by_email(db: Session, email: str):
+#     return db.query(models.User.username).filter(models.User.email == email).first()
 
-def get_user_email_by_id(db: Session, sysuser: int):
-    return db.query(models.User.email).filter(models.User.sysuser == sysuser).first()
+# def get_user_email_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.email).filter(models.User.sysuser == sysuser).first()
 
-def get_user_email_by_username(db: Session, username: str):
-    return db.query(models.User.email).filter(models.User.username == username).first()
+# def get_user_email_by_username(db: Session, username: str):
+#     return db.query(models.User.email).filter(models.User.username == username).first()
 
-def get_user_password_by_id(db: Session, sysuser: int):
-    return db.query(models.User.password).filter(models.User.sysuser == sysuser).first()
+# def get_user_password_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.password).filter(models.User.sysuser == sysuser).first()
 
-def get_user_password_by_username(db: Session, username: str):
-    return db.query(models.User.password).filter(models.User.username == username).first()
+# def get_user_password_by_username(db: Session, username: str):
+#     return db.query(models.User.password).filter(models.User.username == username).first()
 
-def get_user_password_by_email(db: Session, email: str):
-    return db.query(models.User.password).filter(models.User.email == email).first()
+# def get_user_password_by_email(db: Session, email: str):
+#     return db.query(models.User.password).filter(models.User.email == email).first()
 
-def get_user_name_by_id(db: Session, sysuser: int):
-    return db.query(models.User.name).filter(models.User.sysuser == sysuser).first()
+# def get_user_name_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.name).filter(models.User.sysuser == sysuser).first()
 
-def get_user_name_by_username(db: Session, username: str):
-    return db.query(models.User.name).filter(models.User.username == username).first()
+# def get_user_name_by_username(db: Session, username: str):
+#     return db.query(models.User.name).filter(models.User.username == username).first()
 
-def get_user_name_by_email(db: Session, email: str):
-    return db.query(models.User.name).filter(models.User.email == email).first()
+# def get_user_name_by_email(db: Session, email: str):
+#     return db.query(models.User.name).filter(models.User.email == email).first()
 
-def get_user_surname_by_id(db: Session, sysuser: int):
-    return db.query(models.User.surname).filter(models.User.sysuser == sysuser).first()
+# def get_user_surname_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.surname).filter(models.User.sysuser == sysuser).first()
 
-def get_user_surname_by_username(db: Session, username: str):
-    return db.query(models.User.surname).filter(models.User.username == username).first()
+# def get_user_surname_by_username(db: Session, username: str):
+#     return db.query(models.User.surname).filter(models.User.username == username).first()
 
-def get_user_surname_by_email(db: Session, email: str):
-    return db.query(models.User.surname).filter(models.User.email == email).first()
+# def get_user_surname_by_email(db: Session, email: str):
+#     return db.query(models.User.surname).filter(models.User.email == email).first()
 
-def get_user_type_by_id(db: Session, sysuser: int):
-    return db.query(models.User.type).filter(models.User.sysuser == sysuser).first()
+# def get_user_type_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.type).filter(models.User.sysuser == sysuser).first()
 
-def get_user_type_by_username(db: Session, username: str):
-    return db.query(models.User.type).filter(models.User.username == username).first()
+# def get_user_type_by_username(db: Session, username: str):
+#     return db.query(models.User.type).filter(models.User.username == username).first()
 
-def get_user_type_by_email(db: Session, email: str):
-    return db.query(models.User.type).filter(models.User.email == email).first()
+# def get_user_type_by_email(db: Session, email: str):
+#     return db.query(models.User.type).filter(models.User.email == email).first()
 
-def get_user_create_date_by_id(db: Session, sysuser: int):
-    return db.query(models.User.create_date).filter(models.User.sysuser == sysuser).first()
+# def get_user_create_date_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.create_date).filter(models.User.sysuser == sysuser).first()
 
-def get_user_create_date_by_username(db: Session, username: str):
-    return db.query(models.User.create_date).filter(models.User.username == username).first()
+# def get_user_create_date_by_username(db: Session, username: str):
+#     return db.query(models.User.create_date).filter(models.User.username == username).first()
 
-def get_user_create_date_by_email(db: Session, email: str):
-    return db.query(models.User.create_date).filter(models.User.email == email).first()
+# def get_user_create_date_by_email(db: Session, email: str):
+#     return db.query(models.User.create_date).filter(models.User.email == email).first()
 
-def get_user_is_active_by_id(db: Session, sysuser: int):
-    return db.query(models.User.is_active).filter(models.User.sysuser == sysuser).first()
+# def get_user_is_active_by_id(db: Session, sysuser: int):
+#     return db.query(models.User.is_active).filter(models.User.sysuser == sysuser).first()
 
-def get_user_is_active_by_username(db: Session, username: str):
-    return db.query(models.User.is_active).filter(models.User.username == username).first()
+# def get_user_is_active_by_username(db: Session, username: str):
+#     return db.query(models.User.is_active).filter(models.User.username == username).first()
 
-def get_user_is_active_by_email(db: Session, email: str):
-    return db.query(models.User.is_active).filter(models.User.email == email).first()
+# def get_user_is_active_by_email(db: Session, email: str):
+#     return db.query(models.User.is_active).filter(models.User.email == email).first()
 
 # def get_user_newses_by_id(db: Session, sysuser: int):
 #     return db.query(models.News).join(models.User, models.News.create_sysuser == models.User.sysuser).filter(models.User.sysuser == sysuser).all()
@@ -106,17 +106,17 @@ def get_user_is_active_by_email(db: Session, email: str):
 # #endregion
 
 # #region NEWS
-# def get_newses(db: Session):
-#     return db.query(models.News).all()
+def get_newses(db: Session):
+    return db.query(models.News).all()
 
-# def get_newses_active(db: Session):
-#     return db.query(models.News).filter(models.News.is_active == True).all()
+def get_newses_active(db: Session):
+    return db.query(models.News).filter(models.News.is_active == True).all()
 
-# def get_newses_inactive(db: Session):
-#     return db.query(models.News).filter(models.News.is_active == False).all()
+def get_newses_inactive(db: Session):
+    return db.query(models.News).filter(models.News.is_active == False).all()
 
-# def get_news_by_id(db: Session, sysid: int):
-#     return db.query(models.News).filter(models.News.sysnews == sysid).first()
+def get_news_by_id(db: Session, sysnews: int):
+    return db.query(models.News).filter(models.News.sysnews == sysnews).first()
 
 # def get_news_title_by_id(db: Session, sysid: int):
 #     return db.query(models.News.title).filter(models.News.sysnews == sysid).first()
@@ -144,17 +144,17 @@ def get_user_is_active_by_email(db: Session, email: str):
 # #endregion
 
 # #region COMMENT
-# def get_comments(db: Session):
-#     return db.query(models.Comment).all()
+def get_comments(db: Session):
+    return db.query(models.Comment).all()
 
-# def get_comments_active(db: Session):
-#     return db.query(models.Comment).filter(models.Comment.is_active == True).all()
+def get_comments_active(db: Session):
+    return db.query(models.Comment).filter(models.Comment.is_active == True).all()
 
-# def get_comments_inactive(db: Session):
-#     return db.query(models.Comment).filter(models.Comment.is_active == False).all()
+def get_comments_inactive(db: Session):
+    return db.query(models.Comment).filter(models.Comment.is_active == False).all()
 
-# def get_comment_by_id(db: Session, sysid: int):
-#     return db.query(models.Comment).filter(models.Comment.syscomment == sysid).first()
+def get_comment_by_id(db: Session, syscomment: int):
+    return db.query(models.Comment).filter(models.Comment.syscomment == syscomment).first()
 
 # def get_comment_text_by_id(db: Session, sysid: int):
 #     return db.query(models.Comment.text).filter(models.Comment.syscomment == sysid).first()

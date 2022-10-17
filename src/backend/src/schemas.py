@@ -2,6 +2,7 @@
 from datetime import datetime
 from models import UserType, NewsType
 from pydantic import BaseModel
+from typing import Optional
 #endregion
 
 #region USER
@@ -66,10 +67,10 @@ class News(NewsBase):
     text: str
     type: NewsType
     create_date: datetime
-    update_date: datetime
+    update_date: Optional[datetime] = None
     is_active: bool
     create_sysuser: int
-    update_sysuser: int
+    update_sysuser: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -93,7 +94,7 @@ class Comment(CommentBase):
     syscomment: int
     text: str
     create_date: datetime
-    update_date: datetime
+    update_date: Optional[datetime] = None
     is_active: bool
     sysuser: int
     sysnews: int

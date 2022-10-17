@@ -69,3 +69,63 @@ def read_user_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code = 404, detail = "User not found!")
     return user
 #endregion
+
+#region NEWS
+@app.get("/newses", response_model = list[schemas.News])
+def read_newses(db: Session = Depends(get_db)):
+    newses = crud.get_newses(db)
+    if newses is None:
+        raise HTTPException(status_code = 404, detail = "Newses not found!")
+    return newses
+
+@app.get("/newses/active", response_model = list[schemas.News])
+def read_newses_active(db: Session = Depends(get_db)):
+    newses = crud.get_newses_active(db)
+    if newses is None:
+        raise HTTPException(status_code = 404, detail = "Active Newses not found!")
+    return newses
+
+@app.get("/newses/inactive", response_model = list[schemas.News])
+def read_newses_inactive(db: Session = Depends(get_db)):
+    newses = crud.get_newses_inactive(db)
+    if newses is None:
+        raise HTTPException(status_code = 404, detail = "Inactive Newses not found!")
+    return newses
+
+@app.get("/news/id={sysnews}", response_model = schemas.News)
+def read_user_by_id(sysnews: int, db: Session = Depends(get_db)):
+    news = crud.get_news_by_id(db, sysnews = sysnews)
+    if news is None:
+        raise HTTPException(status_code = 404, detail = "News not found!")
+    return news
+#endregion
+
+#region COMMENT
+@app.get("/comments", response_model = list[schemas.Comment])
+def read_comments(db: Session = Depends(get_db)):
+    comments = crud.get_comments(db)
+    if comments is None:
+        raise HTTPException(status_code = 404, detail = "Comments not found!")
+    return comments
+
+@app.get("/comments/active", response_model = list[schemas.Comment])
+def read_comments_active(db: Session = Depends(get_db)):
+    comments = crud.get_comments_active(db)
+    if comments is None:
+        raise HTTPException(status_code = 404, detail = "Active Comments not found!")
+    return comments
+
+@app.get("/comments/inactive", response_model = list[schemas.Comment])
+def read_comments_inactive(db: Session = Depends(get_db)):
+    comments = crud.get_comments_inactive(db)
+    if comments is None:
+        raise HTTPException(status_code = 404, detail = "Inactive Comments not found!")
+    return comments
+
+@app.get("/comment/id={syscomment}", response_model = schemas.Comment)
+def read_comment_by_id(syscomment: int, db: Session = Depends(get_db)):
+    comment = crud.get_comment_by_id(db, syscomment = syscomment)
+    if comment is None:
+        raise HTTPException(status_code = 404, detail = "Comment not found!")
+    return comment
+#endregion
