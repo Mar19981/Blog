@@ -68,6 +68,48 @@ def read_user_by_email(email: str, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code = 404, detail = "User not found!")
     return user
+
+# @app.get("/user/id={sysuser}/newses", response_model = list[schemas.News])
+# def read_user_newses_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     newses = crud.get_user_newses_by_id(db, sysuser = sysuser)
+#     if newses is None:
+#         raise HTTPException(status_code = 404, detail = "User Newses not found!")
+#     return newses
+
+# @app.get("/user/id={sysuser}/newses/active", response_model = list[schemas.News])
+# def read_user_newses_active_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     newses = crud.get_user_newses_active_by_id(db, sysuser = sysuser)
+#     if newses is None:
+#         raise HTTPException(status_code = 404, detail = "User Active Newses not found!")
+#     return newses
+
+# @app.get("/user/id={sysuser}/newses/inactive", response_model = list[schemas.News])
+# def read_user_newses_inactive_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     newses = crud.get_user_newses_inactive_by_id(db, sysuser = sysuser)
+#     if newses is None:
+#         raise HTTPException(status_code = 404, detail = "User Inactive Newses not found!")
+#     return newses
+
+# @app.get("/user/id={sysuser}/comments", response_model = list[schemas.Comment])
+# def read_user_comments_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     comments = crud.get_user_comments_by_id(db, sysuser = sysuser)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "User Comments not found!")
+#     return comments
+
+# @app.get("/user/id={sysuser}/comments/active", response_model = list[schemas.Comment])
+# def read_user_comments_active_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     comments = crud.get_user_comments_active_by_id(db, sysuser = sysuser)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "User Active Comments not found!")
+#     return comments
+
+# @app.get("/user/id={sysuser}/comments/inactive", response_model = list[schemas.Comment])
+# def read_user_comments_inactive_by_id(sysuser: int, db: Session = Depends(get_db)):
+#     comments = crud.get_user_comments_inactive_by_id(db, sysuser = sysuser)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "User Inactive Comments not found!")
+#     return comments
 #endregion
 
 #region NEWS
@@ -98,6 +140,41 @@ def read_user_by_id(sysnews: int, db: Session = Depends(get_db)):
     if news is None:
         raise HTTPException(status_code = 404, detail = "News not found!")
     return news
+
+# @app.get("/news/id={sysnews}/comments", response_model = list[schemas.Comment])
+# def read_news_comments_by_id(sysnews: int, db: Session = Depends(get_db)):
+#     comments = crud.get_news_comments_by_id(db, sysnews = sysnews)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "News Comments not found!")
+#     return comments
+
+# @app.get("/news/id={sysnews}/comments/active", response_model = list[schemas.Comment])
+# def read_news_comments_active_by_id(sysnews: int, db: Session = Depends(get_db)):
+#     comments = crud.get_news_comments_active_by_id(db, sysnews = sysnews)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "News Active Comments not found!")
+#     return comments
+
+# @app.get("/news/id={sysnews}/comments/inactive", response_model = list[schemas.Comment])
+# def read_news_comments_inactive_by_id(sysnews: int, db: Session = Depends(get_db)):
+#     comments = crud.get_news_comments_inactive_by_id(db, sysnews = sysnews)
+#     if comments is None:
+#         raise HTTPException(status_code = 404, detail = "News Inactive Comments not found!")
+#     return comments
+
+# @app.get("/news/id={sysnews}/create_user", response_model = schemas.User)
+# def read_news_create_user_by_id(sysnews: int, db: Session = Depends(get_db)):
+#     user = crud.get_news_create_user_by_id(db, sysnews = sysnews)
+#     if user is None:
+#         raise HTTPException(status_code = 404, detail = "News Create User not found!")
+#     return user
+
+# @app.get("/news/id={sysnews}/update_user", response_model = schemas.User)
+# def read_news_update_user_by_id(sysnews: int, db: Session = Depends(get_db)):
+#     user = crud.get_news_update_user_by_id(db, sysnews = sysnews)
+#     if user is None:
+#         raise HTTPException(status_code = 404, detail = "News Update User not found!")
+#     return user
 #endregion
 
 #region COMMENT
@@ -128,4 +205,18 @@ def read_comment_by_id(syscomment: int, db: Session = Depends(get_db)):
     if comment is None:
         raise HTTPException(status_code = 404, detail = "Comment not found!")
     return comment
+
+# @app.get("/comment/id={syscomment}/user", response_model = schemas.User)
+# def read_comment_user_by_id(syscomment: int, db: Session = Depends(get_db)):
+#     user = crud.get_comment_user_by_id(db, syscomment = syscomment)
+#     if user is None:
+#         raise HTTPException(status_code = 404, detail = "Comment User not found!")
+#     return user
+
+# @app.get("/comment/id={syscomment}/news", response_model = schemas.News)
+# def read_comment_news_by_id(syscomment: int, db: Session = Depends(get_db)):
+#     news = crud.get_comment_news_by_id(db, syscomment = syscomment)
+#     if news is None:
+#         raise HTTPException(status_code = 404, detail = "Comment News not found!")
+#     return news
 #endregion
