@@ -1,4 +1,5 @@
 #region IMPORTS
+from fastapi import HTTPException
 import models
 import schemas
 # import schemas
@@ -14,6 +15,25 @@ def get_users_active(db: Session) -> list[schemas.User]:
 
 def get_users_inactive(db: Session) -> list[schemas.User]:
     return db.query(models.User).filter(models.User.is_active == False).all()
+
+def create_user(db: Session, user: schemas.UserCreate) -> bool:
+    db_user = models.User()
+    
+    db_user.username = user.username
+    db_user.email = user.email
+    db_user.password = user.password
+    db_user.name = user.name
+    db_user.surname = user.surname
+    
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return True
+
+def delete_user(db: Session, user: schemas.User) -> bool:
+    user.is_active = False
+    db.commit()
+    return True
 
 def get_user_by_id(db: Session, sysuser: int) -> schemas.User:
     return db.query(models.User).filter(models.User.sysuser == sysuser).first()
@@ -53,6 +73,24 @@ def get_newses_active(db: Session) -> list[schemas.News]:
 def get_newses_inactive(db: Session) -> list[schemas.News]:
     return db.query(models.News).filter(models.News.is_active == False).all()
 
+def create_news(db: Session, news: schemas.NewsCreate) -> bool:
+    db_news = models.News()
+    
+    db_news.title = news.title
+    db_news.text = news.text
+    db_news.type = news.type
+    db_news.create_sysuser = news.create_sysuser
+    
+    db.add(db_news)
+    db.commit()
+    db.refresh(db_news)
+    return True
+
+def delete_news(db: Session, news: schemas.News) -> bool:
+    news.is_active = False
+    db.commit()
+    return True
+
 def get_news_by_id(db: Session, sysnews: int) -> schemas.News:
     return db.query(models.News).filter(models.News.sysnews == sysnews).first()
 
@@ -81,6 +119,23 @@ def get_comments_active(db: Session) -> list[schemas.Comment]:
 
 def get_comments_inactive(db: Session) -> list[schemas.Comment]:
     return db.query(models.Comment).filter(models.Comment.is_active == False).all()
+
+def create_comment(db: Session, comment: schemas.CommentCreate) -> bool:
+    db_comment = models.Comment()
+    
+    db_comment.text = comment.text
+    db_comment.sysuser = comment.sysuser
+    db_comment.sysnews = comment.sysnews
+    
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return True
+
+def delete_comment(db: Session, comment: schemas.Comment) -> bool:
+    comment.is_active = False
+    db.commit()
+    return True
 
 def get_comment_by_id(db: Session, syscomment: int) -> schemas.Comment:
     return db.query(models.Comment).filter(models.Comment.syscomment == syscomment).first()
