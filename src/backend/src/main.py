@@ -51,14 +51,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="User already registered!")
-    return crud.create_user(db, user)
-
-@app.delete("/user/id={sysuser}", response_model = bool)
-def delete_user_by_id(sysuser: int, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_id(db, sysuser)
-    if db_user is None:
-        raise HTTPException(status_code = 404, detail = "User not found!")
-    return crud.delete_user(db, db_user)
+    return crud.post_user(db, user)
 
 @app.get("/user/id={sysuser}", response_model = schemas.User)
 def read_user_by_id(sysuser: int, db: Session = Depends(get_db)):
@@ -66,6 +59,13 @@ def read_user_by_id(sysuser: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code = 404, detail = "User not found!")
     return db_user
+
+@app.delete("/user/id={sysuser}", response_model = bool)
+def delete_user_by_id(sysuser: int, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, sysuser)
+    if db_user is None:
+        raise HTTPException(status_code = 404, detail = "User not found!")
+    return crud.delete_user(db, db_user)
 
 @app.get("/user/username={username}", response_model = schemas.User)
 def read_user_by_username(username: str, db: Session = Depends(get_db)):
@@ -169,7 +169,17 @@ def read_newses_inactive(db: Session = Depends(get_db)):
 
 @app.post("/news", response_model = bool)
 def create_news(news: schemas.NewsCreate, db: Session = Depends(get_db)):
-    return crud.create_news(db, news)
+    db_user = crud.get_user_by_id(db, news.create_sysuser)
+    if db_user is None:
+        raise HTTPException(status_code = 404, detail = "User not found!")
+    return crud.post_news(db, news)
+
+@app.get("/news/id={sysnews}", response_model = schemas.News)
+def read_news_by_id(sysnews: int, db: Session = Depends(get_db)):
+    db_news = crud.get_news_by_id(db, sysnews)
+    if db_news is None:
+        raise HTTPException(status_code = 404, detail = "News not found!")
+    return db_news
 
 @app.delete("/news/id={sysnews}", response_model = bool)
 def delete_news_by_id(sysnews: int, db: Session = Depends(get_db)):
@@ -180,13 +190,6 @@ def delete_news_by_id(sysnews: int, db: Session = Depends(get_db)):
     for db_comment in db_comments:
         crud.delete_comment(db, db_comment)
     return crud.delete_news(db, db_news)
-
-@app.get("/news/id={sysnews}", response_model = schemas.News)
-def read_news_by_id(sysnews: int, db: Session = Depends(get_db)):
-    db_news = crud.get_news_by_id(db, sysnews)
-    if db_news is None:
-        raise HTTPException(status_code = 404, detail = "News not found!")
-    return db_news
 
 @app.get("/news/id={sysnews}/comments", response_model = list[schemas.Comment])
 def read_news_comments_by_id(sysnews: int, db: Session = Depends(get_db)):
@@ -257,7 +260,13 @@ def read_comments_inactive(db: Session = Depends(get_db)):
 
 @app.post("/comment", response_model = bool)
 def create_comment(comment: schemas.CommentCreate, db: Session = Depends(get_db)):
-    return crud.create_comment(db, comment)
+    db_user = crud.get_user_by_id(db, comment.sysuser)
+    if db_user is None:
+        raise HTTPException(status_code = 404, detail = "User not found!")
+    db_news = crud.get_news_by_id(db, comment.sysnews)
+    if db_news is None:
+        raise HTTPException(status_code = 404, detail = "News not found!")
+    return crud.post_comment(db, comment)
 
 @app.delete("/comment/id={syscomment}", response_model = bool)
 def delete_comment_by_id(syscomment: int, db: Session = Depends(get_db)):
