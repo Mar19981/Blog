@@ -2,27 +2,19 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Navbar from './components/Navbar';
+import { Route, Routes } from 'react-router';
+import Paper from '@mui/material/Paper';
 
 function App() {
   return (
     <>
-    <Navbar ></Navbar>
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-        </a>
-        XDDD
-      </header>
-    </div>
+    <Paper sx={{width: "100%", height: "100vh"}}>
+    <Navbar />
+    <Routes>
+      <Route path="/" element={<div>XD</div>} />
+      <Route path="/my-profile" element={<div>My profile</div>} />
+    </Routes>
+    </Paper>
     </>
   );
 }

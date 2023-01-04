@@ -4,7 +4,6 @@ import Avatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import Link from '@mui/material/Link';
 import Person from '@mui/icons-material/Person';
 import { Link as RouterLink } from 'react-router-dom';
 import Drawer from "@mui/material/Drawer";
@@ -15,18 +14,34 @@ import userProperties from "../shared/UserProperties";
 import UserType from "../shared/UserType";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import RegisterDialog from "./RegisterDialog";
+import LoginDialog from "./LoginDialog";
 
 interface NavbarProps {
     logged?: boolean,
     type?: UserType
 };
 
-const Navbar = ({logged = true, type = UserType.STANDARD}: NavbarProps) => {
+interface CategoryLink {
+    name: string,
+    destination: string;
+}
+
+const categories: Array<CategoryLink> = [ 
+    {name: "Wiadomości", destination: "category/news"}, 
+    {name: "Sport", destination: "category/sport"}, 
+    {name: "Kultura", destination: "category/culture"}, 
+    {name: "Nauka", destination: "category/science"},
+    {name: "Lifestyle", destination: "category/lifestyle"}  
+];
+
+const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
     const [sidebar, setSidebar] = useState<boolean>(false);
     const [anchor, setAnchor] = useState<null | HTMLElement>(null)
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => setAnchor(e.currentTarget);
     const handleClose = () => setAnchor(null);
+    const handleLogout = () => {};
 
     const closeSidebar = () =>
         (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -57,8 +72,8 @@ const Navbar = ({logged = true, type = UserType.STANDARD}: NavbarProps) => {
                 }
                 {!logged &&                    
                     <>
-                    <Button color="inherit">Zaloguj się</Button>
-                    <Button color="inherit">Rejestracja</Button>
+                    <LoginDialog/>
+                    <RegisterDialog/>
                     </>
                 }
                 <Button color="inherit">Blog</Button>
@@ -78,11 +93,18 @@ const Navbar = ({logged = true, type = UserType.STANDARD}: NavbarProps) => {
                 <List>
                     {userProperties[type].navigation?.map((link, index) => (
                     <ListItem key={link.name}>
-                        <ListItemButton>
-                            <ListItemText primary={link.name}/>
-                        </ListItemButton>
+                            <ListItemButton onClick={closeSidebar()}>
+                            <RouterLink to={link.destination}>
+                                <ListItemText primary={link.name}/>
+                            </RouterLink>
+                            </ListItemButton>
                     </ListItem>                   
                     ))}
+                    <ListItem>
+                        <ListItemButton onClick={handleLogout}>
+                            <ListItemText primary="Wyloguj się"/>
+                        </ListItemButton>
+                    </ListItem>     
                 </List>
             </Box>
         </Drawer>
@@ -93,11 +115,12 @@ const Navbar = ({logged = true, type = UserType.STANDARD}: NavbarProps) => {
             onClose={handleClose} 
             MenuListProps ={{"aria-labelledby": "news-button",}}
             >
-                <MenuItem onClick={handleClose}>Wydarzenia</MenuItem>
-                <MenuItem onClick={handleClose}>Sport</MenuItem>
-                <MenuItem onClick={handleClose}>Kultura</MenuItem>
-                <MenuItem onClick={handleClose}>Nauka</MenuItem>
-                <MenuItem onClick={handleClose}>Lifestyle</MenuItem>
+                {categories.map((category, index) => {
+                    return (<MenuItem onClick={handleClose} key={index}>
+                        <RouterLink to={category.destination}>{category.name}</RouterLink>
+                        </MenuItem>)
+                    
+                })}
         </Menu>
         </>
     );
