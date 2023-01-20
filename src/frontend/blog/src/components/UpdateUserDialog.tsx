@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material"
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
@@ -11,18 +11,17 @@ const validationSchema = yup.object({
     .matches(/[a-z]/, 'Hasło musi mieć małą literę')
     .matches(/[A-Z]/, 'Hasło musi mieć wielką literę')
     .matches(/[^\w]/, 'Hasło musi mieć znak specjalny'),
-    confirmPassword: yup.string().oneOf([null, yup.ref("password")], "Proszę potwierdzić hasło"),
     email: yup.string().required().email("Wpisz prawidłowy adres email"),
     firstName: yup.string().required("Wpisz swoje imię"),
     lastName: yup.string().required("Wpisz swoje nazwisko"),
     userType: yup.string().required().oneOf(Object.values(UserType))
 });
 
-interface RegisterProps {
+interface UpdateUserProps {
     adminView?: boolean;
 }
 
-const RegisterDialog = ({adminView=false}: RegisterProps) => {
+const UpdateUserDialog = ({adminView=false}: UpdateUserProps) => {
     const [showDialog, setShowDialog] = useState<boolean>(false);
 
     const handleClose = () => { 
@@ -33,7 +32,6 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
         initialValues: {
             username: "",
             email: "",
-            confirmPassword: "",
             password: "",
             firstName: "",
             lastName: "",
@@ -45,13 +43,11 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
         }
     }
     );
-    const title = adminView ? "Dodaj użytkownika" : "Zarejestruj się";
-    const buttonText = adminView ? "Dodaj" : "Rejestracja";
     return (
         <>
-            <Button color="inherit" onClick={() => setShowDialog(true)}>{buttonText}</Button>
+            <Button color="inherit" onClick={() => setShowDialog(true)}>Edytuj</Button>
             <Dialog open={showDialog} onClose={handleClose}>
-                <DialogTitle>{title}</DialogTitle>
+                <DialogTitle>Edytuj użytkownika</DialogTitle>
                 <DialogContent sx={{flex: 1}}>
                     <FormControl>
                         <Stack spacing={2}>
@@ -60,9 +56,8 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
                                 <TextField id="firstName"  label="Imię" variant="outlined" {...formik.getFieldProps("firstName")} error={formik.touched.firstName && Boolean(formik.errors.firstName)} helperText={formik.touched.firstName && formik.errors.firstName}/>
                                 <TextField id="lastName" label="Nazwisko" variant="outlined" {...formik.getFieldProps("lastName")} error={formik.touched.lastName && Boolean(formik.errors.lastName)} helperText={formik.touched.lastName && formik.errors.lastName}/>
                             </Stack>
-                            <TextField id="email" label="Email" variant="outlined" type="email" {...formik.getFieldProps("email")} error={formik.touched.email && Boolean(formik.errors.email)} helperText={formik.touched.email && formik.errors.email}/>
+                            <TextField id="email" label="Email" variant="outlined" type="email" {...formik.getFieldProps("email")} error={formik.touched.email && Boolean(formik.errors.email)} helperText={formik.touched.email && formik.errors.email} disabled/>
                             <TextField id="password" label="Hasło" variant="outlined" type="password" {...formik.getFieldProps("password")} error={formik.touched.password && Boolean(formik.errors.password)} helperText={formik.touched.password && formik.errors.password}/>
-                            <TextField id="confirmPassword" label="Powtórz hasło" variant="outlined" type="password" {...formik.getFieldProps("confirmPassword")} error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)} helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}/>
                                 <Select id="userType" {...formik.getFieldProps("userType")} sx={{display: adminView ? "inherit" : "none"}}>
                                     <MenuItem value={UserType.STANDARD}>Użytkownik</MenuItem>
                                     <MenuItem value={UserType.EDITOR}>Redaktor</MenuItem>
@@ -79,4 +74,4 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
         </>
     )
 }
-export default RegisterDialog;
+export default UpdateUserDialog;

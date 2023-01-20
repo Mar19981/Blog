@@ -1,5 +1,3 @@
-import UserType from "./UserType";
-
 interface NavigationLink {
     name: string,
     destination: string
@@ -12,22 +10,22 @@ interface Properties {
 }
 
 const userProperties: Record<string, Properties> = {
-    "admin": {isAdmin: true, isEditor: true, navigation: [ 
+    "admin": {isAdmin: true, isEditor: false, navigation: [ 
         {name: "Moje konto", destination: "/my-profile"},
         {name: "Komentarze", destination: "/comments"}, 
-        {name: "Newsy", destination: "/:id/news"}, 
+        {name: "Newsy", destination: "/news"}, 
         {name: "Użytkownicy", destination: "/users"}
     ]},
-    "editor": {isAdmin: true, isEditor: true, 
+    "editor": {isAdmin: false, isEditor: true, 
         navigation: [
             {name: "Moje konto", destination: "/my-profile"},
-            {name: "Komentarze", destination: "/:id/comments"},
-            {name: "Newsy", destination: "/:id/news"}
+            {name: "Komentarze", destination: "users/:id/comments"},
+            {name: "Newsy", destination: "users/:id/news"}
         ]},
-    "standard": {isAdmin: true, isEditor: true, 
+    "standard": {isAdmin: false, isEditor: false, 
         navigation: [
             {name: "Moje konto",destination: "/my-profile"},
-            {name: "Komentarze", destination: "/:id/comments"}
+            {name: "Komentarze", destination: "users/:id/comments"}
         ]},
     }
 
