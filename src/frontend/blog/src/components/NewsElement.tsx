@@ -14,7 +14,7 @@ interface NewsElementProps {
 
 const NewsElement = ({id, title, category, date, author}: NewsElementProps) => {
     return (
-        <Paper elevation={6} sx={{maxWidth: 500, minHeight: 200, padding: 2, display: "flex", flexDirection: "column"}} variant="outlined">
+        <Paper elevation={3} sx={{maxWidth: 500, minHeight: 200, padding: 2, display: "flex", flexDirection: "column"}}>
             <Stack direction={"row"} justifyContent="space-between">
                 <Typography> {date.toLocaleDateString()}</Typography>
                 <Typography> {category.toLocaleUpperCase()}</Typography>

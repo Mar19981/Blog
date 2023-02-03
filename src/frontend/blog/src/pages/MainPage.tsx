@@ -1,12 +1,34 @@
-import Paper from '@mui/material/Paper';
+import Backdrop from '../components/Backdrop';
+import Stack from '@mui/material/Stack';
 import NewsElement from '../components/NewsElement';
 import NewsType from '../shared/NewsType';
 const MainPage = () => {
     return (
         <>
-        <Paper sx={{width: "95vw", height: 900, padding: 2, overflowY: "scroll"}} elevation={2}  variant="outlined">
-            <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
-        </Paper>
+        <Backdrop>
+            <Stack spacing={5}>
+                <Stack direction={"row"} spacing={2} justifyContent="space-between">
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                </Stack>            
+                <Stack direction={"row"} spacing={2} justifyContent="space-between">
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                </Stack>                
+                <Stack direction={"row"} spacing={2} justifyContent="space-between">
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                </Stack>                
+                <Stack direction={"row"} spacing={2} justifyContent="space-between">
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                    <NewsElement id={1} author="Janusz Korwin-Mikke" date={new Date()} title={"Uratowano wolność na Tiananmen!"} category={NewsType.EVENT} />
+                </Stack>
+            </Stack>
+        </Backdrop>
         </>
     );
 }
