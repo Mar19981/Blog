@@ -50,13 +50,11 @@ class NewsCreate(NewsBase):
     type: NewsType
     create_sysuser: int
     
-# class NewsUpdate(NewsBase):
-#     title: str
-#     text: str
-#     type: NewsType
-#     update_sysuser: int
-#     update_date: datetime
-#     is_active: bool
+class NewsUpdate(NewsBase):
+    title: str
+    text: str
+    type: NewsType
+    update_sysuser: int
 
 class News(NewsBase):
     sysnews: int
@@ -82,9 +80,8 @@ class CommentCreate(CommentBase):
     sysuser: int
     sysnews: int
     
-# class CommentUpdate(CommentBase):
-#     text: str
-#     is_active: bool
+class CommentUpdate(CommentBase):
+    text: str
 
 class Comment(CommentBase):
     syscomment: int

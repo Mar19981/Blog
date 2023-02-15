@@ -62,6 +62,12 @@ def delete_user(db: Session, user: schemas.User) -> bool:
     
     db.commit()
     return True
+
+def update_user(db: Session, user: schemas.User) -> bool:
+    db.merge(user)
+    
+    db.commit()
+    return True
 # #endregion
 
 # #region NEWS
@@ -110,6 +116,12 @@ def delete_news(db: Session, news: schemas.News) -> bool:
     
     db.commit()
     return True
+
+def update_news(db: Session, news: schemas.News) -> bool:
+    db.merge(news)
+    
+    db.commit()
+    return True
 # #endregion
 
 # #region COMMENT
@@ -145,6 +157,12 @@ def post_comment(db: Session, comment: schemas.CommentCreate) -> bool:
 
 def delete_comment(db: Session, comment: schemas.Comment) -> bool:
     comment.is_active = False
+    
+    db.commit()
+    return True
+
+def update_comment(db: Session, comment: schemas.Comment) -> bool:
+    db.merge(comment)
     
     db.commit()
     return True
