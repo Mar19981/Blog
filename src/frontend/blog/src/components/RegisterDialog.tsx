@@ -63,7 +63,7 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
                             <TextField id="email" label="Email" variant="outlined" type="email" {...formik.getFieldProps("email")} error={formik.touched.email && Boolean(formik.errors.email)} helperText={formik.touched.email && formik.errors.email}/>
                             <TextField id="password" label="Hasło" variant="outlined" type="password" {...formik.getFieldProps("password")} error={formik.touched.password && Boolean(formik.errors.password)} helperText={formik.touched.password && formik.errors.password}/>
                             <TextField id="confirmPassword" label="Powtórz hasło" variant="outlined" type="password" {...formik.getFieldProps("confirmPassword")} error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)} helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}/>
-                                <Select id="userType" {...formik.getFieldProps("userType")} sx={{display: adminView ? "inherit" : "none"}}>
+                                <Select id="userType" {...formik.getFieldProps("newsType")} sx={{display: adminView ? "inherit" : "none"}}>
                                     <MenuItem value={UserType.STANDARD}>Użytkownik</MenuItem>
                                     <MenuItem value={UserType.EDITOR}>Redaktor</MenuItem>
                                     <MenuItem value={UserType.ADMIN}>Administrator</MenuItem>

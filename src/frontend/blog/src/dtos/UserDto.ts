@@ -1,12 +1,15 @@
 import UserType from "../shared/UserType";
 
-interface RegisterDto {
+interface UserDto {
+    id: number,
     userName: string,
     firstName: string,
     lastName: string,
     password: string,
     userType: UserType,
-    email: string
+    email: string,
+    isActive: boolean,
+    joinDate: Date
 };
 
-export default RegisterDto;
+export default UserDto;
