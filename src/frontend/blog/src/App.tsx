@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Navbar from './components/Navbar';
+import { Route, Routes } from 'react-router';
+import MyAccount from './pages/MyAccount';
+import { Grid } from '@mui/material';
+import MainPage from './pages/MainPage';
+import AddNews from './pages/AddNews';
+import Users from './pages/Users'
+import ArticlePage from './pages/ArticlePage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn XD
-        </a>
-      </header>
-    </div>
+    <>
+    <Navbar />
+    <Grid sx={{width:"100%", height:"100vh"}} container justifyContent={"center"} alignContent="center">
+      <Routes>
+        <Route path="/" element={<ArticlePage />} />
+        <Route path="/my-account" element={<MyAccount/>} />
+      </Routes>
+    </Grid>
+    </>
   );
 }
 
