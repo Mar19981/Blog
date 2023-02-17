@@ -15,6 +15,7 @@ class UserCreate(UserBase):
     password: str
     name: str
     surname: str
+    type: UserType
     
 # class UserUpdate(UserBase):
 #     username: str
@@ -95,3 +96,10 @@ class Comment(CommentBase):
     class Config:
         orm_mode = True
 #endregion
+
+class LoginBase(BaseModel):
+    pass
+
+class Login(LoginBase):
+    login: str
+    password: str

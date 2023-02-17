@@ -8,20 +8,24 @@ interface NewsElementProps {
     title: string,
     category: NewsType,
     date: Date,
-    author: string
 
 }
 
-const NewsElement = ({id, title, category, date, author}: NewsElementProps) => {
+const NewsElement = ({id, title, category, date}: NewsElementProps) => {
     return (
-        <Paper elevation={3} sx={{maxWidth: 500, minHeight: 200, padding: 2, display: "flex", flexDirection: "column"}}>
+        <Paper elevation={3} sx={{maxWidth: 500, minHeight: 200, padding: 2, display: "flex", flexDirection: "column", marginTop: 5}}>
             <Stack direction={"row"} justifyContent="space-between">
-                <Typography> {date.toLocaleDateString()}</Typography>
-                <Typography> {category.toLocaleUpperCase()}</Typography>
+                <Typography> {new Date(date).toLocaleDateString()}</Typography>
+                <Typography> 
+                    {category === NewsType.CULTURE && "Kultura"}
+                    {category === NewsType.SPORT && "Sport"}
+                    {category === NewsType.EVENT && "Wydarzenia"}
+                    {category === NewsType.LIFESTYLE && "Lifestyle"}
+                    {category === NewsType.SCIENCE && "Nauka"}
+                    </Typography>
             </Stack>
-            <Typography variant="overline">{author}</Typography>
-            <Typography variant="h4">{title.toLocaleUpperCase()}</Typography>
-            <Typography alignSelf={"flex-end"} variant="button"><Link to={`/news/${id}`}>Czytaj dalej...</Link></Typography>
+            <Typography variant="h5">{title.toLocaleUpperCase()}</Typography>
+            <Typography alignSelf={"flex-end"} variant="button"><Link to={`/news/${id}`} style={{color:"#D6D6D6", textDecoration: "none"}}>Czytaj dalej...</Link></Typography>
         </Paper>
     )
 }

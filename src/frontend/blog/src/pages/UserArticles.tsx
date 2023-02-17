@@ -8,20 +8,17 @@ import DeleteDialog from "../components/DeleteDialog";
 import API_SERVER from "../shared/consts";
 import LoggedInDto from "../dtos/LoggedInDto";
 import UserType from "../shared/UserType";
-import { Navigate } from "react-router";
+import { Navigate, useParams } from "react-router";
 
-interface ArticlesProps {
-    user: LoggedInDto | null
-}
-
-const Articles = ({user}: ArticlesProps) => {
+const UserArticles = () => {
     const [articles, setArticles] = useState<Array<ArticleDto>>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const {id} = useParams();
     useEffect(() => {
         const getArticles = async () => {
           const articlesFromServer = await fetchArticles()
-          setArticles(articlesFromServer)
+          setArticles(Array.isArray(articlesFromServer) ? articlesFromServer.filter((article: ArticleDto) => article.is_active === true) : [])
         }
     
         getArticles()
@@ -29,7 +26,7 @@ const Articles = ({user}: ArticlesProps) => {
     
       // Fetch Tasks
       const fetchArticles = async () => {
-        const res = await fetch(`http://${API_SERVER}/articles`)
+        const res = await fetch(`http://${API_SERVER}/user/${id}/articles`)
         console.log(res);
         const data = await res.json()
     
@@ -53,9 +50,6 @@ const Articles = ({user}: ArticlesProps) => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
-    if( user === null || user.type !== UserType.ADMIN) {
-        return (<Navigate to="/"></Navigate>)
-    }
     return (
         <>
             <Backdrop>
@@ -75,12 +69,7 @@ const Articles = ({user}: ArticlesProps) => {
                                 </TableCell>                        
                                 <TableCell style={{width: "5vw"}}>
                                     Kategoria
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    Dostępność
-                                </TableCell>                                                       
-                                <TableCell style={{width: "5vw"}}>
-                                </TableCell>
+                                </TableCell>                                                                                     
                             </TableRow>                    
                             {(rowsPerPage > 0
                                 ? articles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -102,14 +91,7 @@ const Articles = ({user}: ArticlesProps) => {
                                     {article.type === NewsType.SCIENCE && "Nauka"}
                                     {article.type === NewsType.CULTURE && "Kultura"}
                                     {article.type === NewsType.SPORT && "Sport"}
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    {article.is_active && "Aktywny"}
-                                    {!article.is_active && "Nieaktywny"}
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    <DeleteDialog message="Czy chcesz usunąć artykuł?" entityName={article.title} id={article.sysnews} url="article"/>
-                                </TableCell>
+                                </TableCell>                                                              
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -138,4 +120,4 @@ const Articles = ({user}: ArticlesProps) => {
         </>
     );
 }
-export default Articles;
+export default UserArticles;

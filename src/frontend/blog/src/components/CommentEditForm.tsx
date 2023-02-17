@@ -2,42 +2,41 @@ import { Button, Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import CreateCommentDto from "../dtos/CreateCommentDto";
 import CommentDto from "../dtos/CommentDto";
+import UpdateCommentDto from "../dtos/UpdateCommentDto";
 import API_SERVER from "../shared/consts";
 
-interface CommentFormProps {
-    userId: number,
-    articleId: number,
+interface CommentEditFormProps {
+    comment: CommentDto,
     setComment: React.Dispatch<React.SetStateAction<CommentDto[]>>,
+    setEditing: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const validationSchema = yup.object({
     content: yup.string().required("Uzupełnij treść komentarza"),
 });
-const CommentForm = ({userId, articleId, setComment}: CommentFormProps) => {
+const CommentEditForm = ({comment, setComment, setEditing}:CommentEditFormProps) => {
     const formik = useFormik({
         initialValues: {
-            content: "",
+            content: comment.text,
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
-            const payload: CreateCommentDto = {
-                sysnews: articleId, 
-                sysuser: userId, 
-                text: values.content, 
-            };
-            const res = await fetch(`http://${API_SERVER}/comment`, {
-                method: "POST",
+            const payload: UpdateCommentDto = {
+                text: values.content
+            }
+            const res = await fetch(`http://${API_SERVER}/comment/${comment.syscomment}`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
-            const obj: CommentDto = {text: values.content, sysnews: articleId, sysuser: userId, create_date: new Date(), is_active:true, update_date:null, syscomment:-1}
-            setComment((prev) => [...prev, obj]);
-            formik.resetForm();
+            console.log(data);
+            comment.text = values.content;
+            setComment((prev) => prev.map((x) => x.syscomment === comment.syscomment ? comment : x))
+            setEditing(false);
         }
     });
     return(
@@ -51,4 +50,4 @@ const CommentForm = ({userId, articleId, setComment}: CommentFormProps) => {
             </>
     )
 }
-export default CommentForm;
+export default CommentEditForm;

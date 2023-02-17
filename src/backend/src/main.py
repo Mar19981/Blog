@@ -8,11 +8,30 @@ from database import SessionLocal, engine
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 #endregion
 
 models.Base.metadata.create_all(bind = engine)
 
 app = FastAPI()
+
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 #region DEPENDENCY
 def get_db():
@@ -56,7 +75,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.post_user(db, user)
 
 @app.put("/user/{sysuser}")
-def update_user(sysuser: int, req: schemas.User, db: Session = Depends(get_db)):
+def update_user(sysuser: int, req: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, sysuser)
     if db_user:
         update_user_encoded = jsonable_encoder(req)
@@ -138,8 +157,6 @@ def read_user_newses_inactive_by_id(sysuser: int, db: Session = Depends(get_db))
 @app.get("/user/{sysuser}/comments", response_model = list[schemas.Comment])
 def read_user_comments_by_id(sysuser: int, db: Session = Depends(get_db)):
     db_comments = crud.get_user_comments_by_id(db, sysuser)
-    if db_comments == []:
-        raise HTTPException(status_code = 404, detail = "User Comments not found!")
     return db_comments
 
 @app.delete("/user/{sysuser}/comments", response_model = bool)
@@ -351,3 +368,15 @@ def read_comment_news_by_id(syscomment: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code = 404, detail = "Comment News not found!")
     return db_news
 #endregion
+@app.post("/login")
+def login(req: schemas.Login, db: Session = Depends(get_db)):
+    req_encoded = jsonable_encoder(req)
+    db_user = crud.get_user_by_username(db, req_encoded["login"])
+    if db_user:
+        if db_user.password == req_encoded["password"] and db_user.is_active:
+            return {
+                "id": db_user.sysuser,
+                "username": db_user.username,
+                "type": db_user.type
+            }
+    raise HTTPException(status_code = 404, detail = "Failed to login!")

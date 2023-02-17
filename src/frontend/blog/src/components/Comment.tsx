@@ -1,13 +1,26 @@
 import { Button, Paper, Stack, Typography, Container } from "@mui/material";
 import DeleteDialog from "./DeleteDialog";
-import CommentDto from "../dtos/CommentDto";
 import {useState} from "react";
-import CommentForm from "./CommentForm";
+import CommentEditForm from "./CommentEditForm";
+import CommentDto from "../dtos/CommentDto";
+import { Link } from "react-router-dom";
 
-const dto: CommentDto | null = null;
-const Comment = () => {
+interface CommentProps {
+    text: string,
+    id: number,
+    author: string,
+    date: Date,
+    active: boolean,
+    editable: boolean,
+    comment: CommentDto,
+    setComment: React.Dispatch<React.SetStateAction<CommentDto[]>>
+}
+
+const Comment = ({text, id, author, date, active, editable, comment, setComment}: CommentProps) => {
     const [editing, setEditing] = useState<boolean>(false);
     const buttonText: string = !editing ? "Edytuj" : "Anuluj";
+    const editableComment: boolean = active && editable;
+    const commentText: string = active ? text : "Komentarz usunięty";
     const handleClick = () => {
         setEditing((prevState) => !prevState);
     }
@@ -16,22 +29,24 @@ const Comment = () => {
         <Paper style={{width: "80%", minHeight: 100, padding: 5}}>
             <Stack>
             <Stack direction="row" justifyContent="space-between">
-                <Typography>Czang kaj czek (3y42424255)</Typography>
+                <Typography><Link to={`/user/${comment.sysuser}`} style={{color:"#D6D6D6", textDecoration: "none"}}>{`${author} (${new Date(date).toLocaleDateString()})`}</Link></Typography>
+                { editableComment &&
                 <Stack direction="row" justifyContent="space-between">
                     <Button onClick={handleClick}>{buttonText}</Button>
                     { !editing &&
                         
-                        <DeleteDialog message="Czy chcesz usunąć komentarz?" entityName="komentarz" deletedEntity={dto}></DeleteDialog>
+                        <DeleteDialog message="Czy chcesz usunąć komentarz?" entityName="komentarz" id={id} url="comment"></DeleteDialog>
                     }
                 </Stack>
+                }
             </Stack>
             {!editing &&
-                <Typography>sudfahfousahfoishvshviusdhfojhsodghoshfgosjfdpo</Typography>
+                <Typography>{commentText}</Typography>
             }
             {editing &&
                 (
                 <Container style={{alignSelf: "center", width:"100%", display: "flex", justifyContent: "center"}}>
-                    <CommentForm/>
+                    <CommentEditForm comment={comment} setComment={setComment} setEditing={setEditing}/>
                 </Container>
                 )
             }

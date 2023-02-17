@@ -1,20 +1,36 @@
-import { Avatar, Button, CardActions, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Paper, Stack, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import UserType from "../shared/UserType";
 import {Link as RouterLink} from "react-router-dom"
 import Person from "@mui/icons-material/Person";
+import { useEffect, useState } from "react";
+import UserDto from "../dtos/UserDto";
+import API_SERVER from "../shared/consts";
 
 interface UserInfoProps{
     id: number,
-    username: string,
-    firstName: string,
-    lastName: string,
-    joinDate: Date,
-    type: UserType
 }
 
 
-const UserInfo = ({id, username, firstName, lastName, joinDate, type}: UserInfoProps) => {
+const UserInfo = ({id}: UserInfoProps) => {
+    const [user, setUsers] = useState<UserDto | any>({});
+    useEffect(() => {
+        const getUsers = async () => {
+          const usersFromServer = await fetchUsers()
+          setUsers(usersFromServer)
+        }
+    
+        getUsers()
+      }, [])
+    
+      // Fetch Tasks
+      const fetchUsers = async () => {
+        const res = await fetch(`http://${API_SERVER}/user/${id}`)
+        console.log(res);
+        const data = await res.json()
+    
+        return data
+      }
     return (
         <Box sx={{maxWidth: 750}}>
             <Paper variant="outlined" sx={{padding: 5}}>
@@ -23,30 +39,30 @@ const UserInfo = ({id, username, firstName, lastName, joinDate, type}: UserInfoP
                         <Person/>
                     </Avatar>
                     <Typography variant="h4">
-                        {`${firstName} ${lastName} (${username})`}
+                        {`${user.name} ${user.surname} (${user.username})`}
                     </Typography>                    
                     <Typography variant="caption">
-                        {type === UserType.STANDARD &&
-                            `Użytkownik (od ${joinDate.toLocaleDateString()})`}                        
-                        {type === UserType.EDITOR &&
-                            `Redaktor (od ${joinDate.toLocaleDateString()})`
+                        {user.type === UserType.STANDARD &&
+                            `Użytkownik (od ${new Date(user.create_date).toLocaleDateString()})`}                        
+                        {user.type === UserType.EDITOR &&
+                            `Redaktor (od ${new Date(user.create_date).toLocaleDateString()})`
                         }                        
-                        {type === UserType.ADMIN &&
-                            `Administrator (od ${joinDate.toLocaleDateString()})`
+                        {user.type === UserType.ADMIN &&
+                            `Administrator (od ${new Date(user.create_date).toLocaleDateString()})`
                         }
                     </Typography>
-                    { type !== UserType.EDITOR &&
-                        <RouterLink to={`users/${id}/comments`}>
+                    { user.type !== UserType.EDITOR &&
+                        <RouterLink to={`/users/${id}/comments`} style={{color:"#D6D6D6", textDecoration: "none"}}>
                             <Button>Komentarze</Button>
                         </RouterLink>
                     }
                     {
-                        type === UserType.EDITOR &&
+                        user.type === UserType.EDITOR &&
                     <Stack direction={"row"} spacing={2}>
-                        <RouterLink to={`users/${id}/comments`}>
+                        <RouterLink to={`/users/${id}/comments`} style={{color:"#D6D6D6", textDecoration: "none"}}>
                             <Button variant="outlined">Komentarze</Button>
                         </RouterLink>
-                    <RouterLink to={`users/${id}/news`}>
+                    <RouterLink to={`/users/${id}/news`} style={{color:"#D6D6D6", textDecoration: "none"}}>
                         <Button variant="outlined">Wiadomości</Button>
                     </RouterLink>
                     </Stack>

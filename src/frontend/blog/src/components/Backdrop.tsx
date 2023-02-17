@@ -6,7 +6,7 @@ interface BackdropProps {
 
 const Backdrop = ({children}: BackdropProps) => {
     return (
-        <Paper sx={{width: "95vw", height: 900, padding: 2, overflowY: "scroll"}} elevation={2}  variant="outlined">
+        <Paper sx={{width: "95vw", height: 900, padding: 2, overflowY: "scroll", justifyContent: "center"}} elevation={2}  variant="outlined">
             {children}
         </Paper>
     )

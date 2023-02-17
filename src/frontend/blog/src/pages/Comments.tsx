@@ -1,23 +1,40 @@
 import { TableContainer, TableRow, TableCell, Table, TableBody, TableFooter, TablePagination, Typography } from "@mui/material"
 import Backdrop from '../components/Backdrop'
 import RegisterDialog from "../components/RegisterDialog";
-import {useState} from "react";
-import UserDto from "../dtos/UserDto";
+import {useEffect, useState} from "react";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import UserType from "../shared/UserType";
 import DeleteDialog from "../components/DeleteDialog";
+import CommentDto from "../dtos/CommentDto";
+import API_SERVER from "../shared/consts";
+import LoggedInDto from "../dtos/LoggedInDto";
+import { Navigate } from "react-router";
+import UserType from "../shared/UserType";
 
-const Comments = () => {
-    const [comments, setComments] = useState<Array<UserDto>>([
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-        {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-    ]);
+interface CommentsProps {
+    user: LoggedInDto | null
+}
+
+const Comments = ({user}: CommentsProps) => {
+    const [comments, setComments] = useState<Array<CommentDto>>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    useEffect(() => {
+        const getComments = async () => {
+          const commentsFromServer = await fetchUsers()
+          setComments(commentsFromServer)
+        }
+    
+        getComments()
+      }, [])
+    
+      // Fetch Tasks
+      const fetchUsers = async () => {
+        const res = await fetch(`http://${API_SERVER}/comments`)
+        console.log(res);
+        const data = await res.json()
+    
+        return data
+      }
   
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -36,6 +53,9 @@ const Comments = () => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
+    if( user === null || user.type !== UserType.ADMIN) {
+        return (<Navigate to="/"></Navigate>)
+    }
     return (
         <>
             <Backdrop>
@@ -48,41 +68,25 @@ const Comments = () => {
                                     Id
                                 </TableCell>                        
                                 <TableCell style={{width: "5vw"}}>
-                                    Imię
+                                    Data
+                                </TableCell>                                              
+                                <TableCell style={{width: "5vw"}}>
+                                    Treść
                                 </TableCell>                        
-                                <TableCell style={{width: "5vw"}}>
-                                    Nazwisko
-                                </TableCell>                        
-                                <TableCell style={{width: "5vw"}}>
-                                    Typ
-                                </TableCell>                        
-                                <TableCell style={{width: "5vw"}}>
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                </TableCell>
                             </TableRow>                    
                             {(rowsPerPage > 0
                                 ? comments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 : comments
-                            ).map((user) => (
-                                <TableRow key={user.id}>
+                            ).map((comment) => (
+                                <TableRow key={comment.syscomment}>
                                 <TableCell component="th" scope="row" style={{width: "5vw"}}>
-                                    {user.id}
+                                    {comment.syscomment}
                                 </TableCell>
                                 <TableCell style={{width: "5vw"}}>
-                                    {user.firstName}
+                                    {new Date(comment.create_date).toLocaleDateString()}
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
-                                    {user.lastName}
-                                </TableCell>
-                                <TableCell style={{width: "5vw"}}>
-                                    {user.userType}
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    <RegisterDialog/>
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    <DeleteDialog message="Czy chcesz usunąć użytkownika?" entityName={user.userName} deletedEntity={user}/>
+                                    {comment.text}
                                 </TableCell>
                                 </TableRow>
                             ))}

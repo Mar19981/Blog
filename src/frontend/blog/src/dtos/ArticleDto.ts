@@ -1,15 +1,15 @@
 import NewsType from "../shared/NewsType";
 
 interface ArticleDto {
-    id: number,
+    sysnews: number,
     title: string,
-    content: string,
-    articleType: NewsType,
-    isActive: boolean,
-    creationDate: Date,
-    updateDate: Date,
-    creationUser: number,
-    updateUser: number,
+    text: string,
+    type: NewsType,
+    is_active: boolean,
+    create_date: Date,
+    update_date: Date,
+    create_sysuser: number,
+    update_sysuser: number,
 
 };
 

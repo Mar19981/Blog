@@ -1,7 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, MenuItem, Select, Stack, TextField } from "@mui/material"
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
+import RegisterDto from "../dtos/RegisterDto";
+import API_SERVER from "../shared/consts";
 import UserType from "../shared/UserType";
 
 const validationSchema = yup.object({
@@ -15,7 +17,7 @@ const validationSchema = yup.object({
     email: yup.string().required().email("Wpisz prawidłowy adres email"),
     firstName: yup.string().required("Wpisz swoje imię"),
     lastName: yup.string().required("Wpisz swoje nazwisko"),
-    userType: yup.string().required().oneOf(Object.values(UserType))
+    userType: yup.number().required().oneOf([1, 2, 3])
 });
 
 interface RegisterProps {
@@ -40,7 +42,24 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
             userType: UserType.STANDARD
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
+            const payload: RegisterDto = {
+                surname: values.lastName, 
+                name: values.firstName, 
+                type: values.userType, 
+                username: values.username,
+                email: values.email,
+                password: values.password
+            };
+            const res = await fetch(`http://${API_SERVER}/user`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            console.log(data); 
             handleClose();
         }
     }
@@ -52,6 +71,7 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
             <Button color="inherit" onClick={() => setShowDialog(true)}>{buttonText}</Button>
             <Dialog open={showDialog} onClose={handleClose}>
                 <DialogTitle>{title}</DialogTitle>
+                <form onSubmit={formik.handleSubmit}>
                 <DialogContent sx={{flex: 1}}>
                     <FormControl>
                         <Stack spacing={2}>
@@ -63,7 +83,7 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
                             <TextField id="email" label="Email" variant="outlined" type="email" {...formik.getFieldProps("email")} error={formik.touched.email && Boolean(formik.errors.email)} helperText={formik.touched.email && formik.errors.email}/>
                             <TextField id="password" label="Hasło" variant="outlined" type="password" {...formik.getFieldProps("password")} error={formik.touched.password && Boolean(formik.errors.password)} helperText={formik.touched.password && formik.errors.password}/>
                             <TextField id="confirmPassword" label="Powtórz hasło" variant="outlined" type="password" {...formik.getFieldProps("confirmPassword")} error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)} helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}/>
-                                <Select id="userType" {...formik.getFieldProps("newsType")} sx={{display: adminView ? "inherit" : "none"}}>
+                                <Select id="userType" {...formik.getFieldProps("userType")} sx={{display: adminView ? "inherit" : "none"}}>
                                     <MenuItem value={UserType.STANDARD}>Użytkownik</MenuItem>
                                     <MenuItem value={UserType.EDITOR}>Redaktor</MenuItem>
                                     <MenuItem value={UserType.ADMIN}>Administrator</MenuItem>
@@ -75,6 +95,7 @@ const RegisterDialog = ({adminView=false}: RegisterProps) => {
             <Button onClick={handleClose}>Anuluj</Button>
             <Button type="submit">Wyślij</Button>
             </DialogActions>
+            </form>
             </Dialog>
         </>
     )

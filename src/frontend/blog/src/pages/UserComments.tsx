@@ -1,35 +1,33 @@
 import { TableContainer, TableRow, TableCell, Table, TableBody, TableFooter, TablePagination, Typography } from "@mui/material"
 import Backdrop from '../components/Backdrop'
+import RegisterDialog from "../components/RegisterDialog";
 import {useEffect, useState} from "react";
-import ArticleDto from "../dtos/ArticleDto";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import NewsType from "../shared/NewsType";
 import DeleteDialog from "../components/DeleteDialog";
+import CommentDto from "../dtos/CommentDto";
 import API_SERVER from "../shared/consts";
 import LoggedInDto from "../dtos/LoggedInDto";
+import { Navigate, useParams } from "react-router";
 import UserType from "../shared/UserType";
-import { Navigate } from "react-router";
 
-interface ArticlesProps {
-    user: LoggedInDto | null
-}
 
-const Articles = ({user}: ArticlesProps) => {
-    const [articles, setArticles] = useState<Array<ArticleDto>>([]);
+const MyComments = () => {
+    const [comments, setComments] = useState<Array<CommentDto>>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const {id} = useParams();
     useEffect(() => {
-        const getArticles = async () => {
-          const articlesFromServer = await fetchArticles()
-          setArticles(articlesFromServer)
+        const getComments = async () => {
+          const commentsFromServer = await fetchUsers()
+          setComments(Array.isArray(commentsFromServer) ? commentsFromServer.filter((comment: CommentDto) => comment.is_active === true) : [])
         }
     
-        getArticles()
+        getComments()
       }, [])
     
       // Fetch Tasks
-      const fetchArticles = async () => {
-        const res = await fetch(`http://${API_SERVER}/articles`)
+      const fetchUsers = async () => {
+        const res = await fetch(`http://${API_SERVER}/user/${id}/comments`)
         console.log(res);
         const data = await res.json()
     
@@ -38,7 +36,7 @@ const Articles = ({user}: ArticlesProps) => {
   
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-      page > 0 ? Math.max(0, (1 + page) * rowsPerPage - articles.length) : 0;
+      page > 0 ? Math.max(0, (1 + page) * rowsPerPage - comments.length) : 0;
   
     const handleChangePage = (
       event: React.MouseEvent<HTMLButtonElement> | null,
@@ -53,13 +51,10 @@ const Articles = ({user}: ArticlesProps) => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
-    if( user === null || user.type !== UserType.ADMIN) {
-        return (<Navigate to="/"></Navigate>)
-    }
     return (
         <>
             <Backdrop>
-                <Typography variant="h2" align="center" marginBottom={5}>Artykuły</Typography>
+                <Typography variant="h2" align="center" marginBottom={5}>Użytkownicy</Typography>
                 <TableContainer style={{border: "1px solid #515151"}}>
                     <Table>
                         <TableBody>
@@ -68,47 +63,25 @@ const Articles = ({user}: ArticlesProps) => {
                                     Id
                                 </TableCell>                        
                                 <TableCell style={{width: "5vw"}}>
-                                    Tytuł
-                                </TableCell>                        
-                                <TableCell style={{width: "5vw"}}>
                                     Data
+                                </TableCell>                                              
+                                <TableCell style={{width: "5vw"}}>
+                                    Treść
                                 </TableCell>                        
-                                <TableCell style={{width: "5vw"}}>
-                                    Kategoria
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    Dostępność
-                                </TableCell>                                                       
-                                <TableCell style={{width: "5vw"}}>
-                                </TableCell>
                             </TableRow>                    
                             {(rowsPerPage > 0
-                                ? articles.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                : articles
-                            ).map((article) => (
-                                <TableRow key={article.sysnews}>
+                                ? comments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                : comments
+                            ).map((comment) => (
+                                <TableRow key={comment.syscomment}>
                                 <TableCell component="th" scope="row" style={{width: "5vw"}}>
-                                    {article.sysnews}
+                                    {comment.syscomment}
                                 </TableCell>
                                 <TableCell style={{width: "5vw"}}>
-                                    {article.title}
+                                    {new Date(comment.create_date).toLocaleDateString()}
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
-                                    {new Date (article.create_date).toLocaleDateString()}
-                                </TableCell>
-                                <TableCell style={{width: "5vw"}}>
-                                    {article.type === NewsType.EVENT && "Wydarzenia"}
-                                    {article.type === NewsType.LIFESTYLE && "Lifestyle"}
-                                    {article.type === NewsType.SCIENCE && "Nauka"}
-                                    {article.type === NewsType.CULTURE && "Kultura"}
-                                    {article.type === NewsType.SPORT && "Sport"}
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    {article.is_active && "Aktywny"}
-                                    {!article.is_active && "Nieaktywny"}
-                                </TableCell>                                
-                                <TableCell style={{width: "5vw"}}>
-                                    <DeleteDialog message="Czy chcesz usunąć artykuł?" entityName={article.title} id={article.sysnews} url="article"/>
+                                    {comment.text}
                                 </TableCell>
                                 </TableRow>
                             ))}
@@ -117,7 +90,7 @@ const Articles = ({user}: ArticlesProps) => {
                             <TableRow>
                                 <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                count={articles.length}
+                                count={comments.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 SelectProps={{
@@ -138,4 +111,4 @@ const Articles = ({user}: ArticlesProps) => {
         </>
     );
 }
-export default Articles;
+export default MyComments;

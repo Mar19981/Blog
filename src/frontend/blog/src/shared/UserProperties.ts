@@ -9,23 +9,24 @@ interface Properties {
     navigation?: Array<NavigationLink>
 }
 
-const userProperties: Record<string, Properties> = {
-    "admin": {isAdmin: true, isEditor: false, navigation: [ 
-        {name: "Moje konto", destination: "/my-profile"},
+const userProperties: Record<number, Properties> = {
+    1: {isAdmin: true, isEditor: false, navigation: [ 
+        {name: "Moje konto", destination: "/my-account"},
         {name: "Komentarze", destination: "/comments"}, 
         {name: "Newsy", destination: "/news"}, 
         {name: "Użytkownicy", destination: "/users"}
     ]},
-    "editor": {isAdmin: false, isEditor: true, 
+    2: {isAdmin: false, isEditor: true, 
         navigation: [
-            {name: "Moje konto", destination: "/my-profile"},
-            {name: "Komentarze", destination: "users/:id/comments"},
-            {name: "Newsy", destination: "users/:id/news"}
+            {name: "Moje konto", destination: "/my-account"},
+            {name: "Dodaj artykuł", destination: "/news/add"},
+            {name: "Moje komentarze", destination: "/my-comments"},
+            {name: "Moje artykuły", destination: "/my-news"}
         ]},
-    "standard": {isAdmin: false, isEditor: false, 
+    3: {isAdmin: false, isEditor: false, 
         navigation: [
-            {name: "Moje konto",destination: "/my-profile"},
-            {name: "Komentarze", destination: "users/:id/comments"}
+            {name: "Moje konto",destination: "/my-account"},
+            {name: "Moje komentarze", destination: "/my-comments"}
         ]},
     }
 

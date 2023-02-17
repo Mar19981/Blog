@@ -1,23 +1,41 @@
 import { TableContainer, TableRow, TableCell, Table, TableBody, TableFooter, TablePagination, Typography } from "@mui/material"
 import Backdrop from '../components/Backdrop'
 import RegisterDialog from "../components/RegisterDialog";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import UserDto from "../dtos/UserDto";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import UserType from "../shared/UserType";
 import DeleteDialog from "../components/DeleteDialog";
+import API_SERVER from "../shared/consts";
+import LoggedInDto from "../dtos/LoggedInDto";
+import { Navigate } from "react-router";
+import UpdateUserDialog from "../components/UpdateUserDialog";
 
-const Users = () => {
-    const [users, setUsers] = useState<Array<UserDto>>([
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-       {id: 1, password: "123", userName: "Hiszpan13", firstName: "Hieronim", lastName: "Cipior", email: "hiszpan13@tlen.pl", userType: UserType.ADMIN, isActive: true, joinDate: new Date()},
-    ]);
+interface UsersProps {
+    user: LoggedInDto | null
+}
+
+const Users = ({user}: UsersProps) => {
+    const [users, setUsers] = useState<Array<UserDto>>([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    useEffect(() => {
+        const getUsers = async () => {
+          const usersFromServer = await fetchUsers()
+          setUsers(usersFromServer)
+        }
+    
+        getUsers()
+      }, [])
+    
+      // Fetch Tasks
+      const fetchUsers = async () => {
+        const res = await fetch(`http://${API_SERVER}/users`)
+        console.log(res);
+        const data = await res.json()
+    
+        return data
+      }
   
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -36,10 +54,14 @@ const Users = () => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
+    if( user === null || user.type !== UserType.ADMIN) {
+        return (<Navigate to="/"></Navigate>)
+    }
     return (
         <>
             <Backdrop>
                 <Typography variant="h2" align="center" marginBottom={5}>Użytkownicy</Typography>
+                <RegisterDialog adminView={true}></RegisterDialog>
                 <TableContainer style={{border: "1px solid #515151"}}>
                     <Table>
                         <TableBody>
@@ -57,6 +79,9 @@ const Users = () => {
                                     Typ
                                 </TableCell>                        
                                 <TableCell style={{width: "5vw"}}>
+                                    Dostępność
+                                </TableCell>                                 
+                                <TableCell style={{width: "5vw"}}>
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
                                 </TableCell>
@@ -65,24 +90,30 @@ const Users = () => {
                                 ? users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 : users
                             ).map((user) => (
-                                <TableRow key={user.id}>
+                                <TableRow key={user.sysuser}>
                                 <TableCell component="th" scope="row" style={{width: "5vw"}}>
-                                    {user.id}
+                                    {user.sysuser}
                                 </TableCell>
                                 <TableCell style={{width: "5vw"}}>
-                                    {user.firstName}
+                                    {user.name}
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
-                                    {user.lastName}
+                                    {user.surname}
                                 </TableCell>
                                 <TableCell style={{width: "5vw"}}>
-                                    {user.userType}
+                                    {user.type === UserType.ADMIN && "Administrator"}
+                                    {user.type === UserType.EDITOR && "Redaktor"}
+                                    {user.type === UserType.STANDARD && "Użytkownik"}
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
-                                    <RegisterDialog/>
+                                    {user.is_active && "Aktywny"}
+                                    {!user.is_active && "Nieaktywny"}
+                                </TableCell>                                 
+                                 <TableCell style={{width: "5vw"}}>
+                                    <UpdateUserDialog user={user} setUser={setUsers}/>
                                 </TableCell>                                
                                 <TableCell style={{width: "5vw"}}>
-                                    <DeleteDialog message="Czy chcesz usunąć użytkownika?" entityName={user.userName} deletedEntity={user}/>
+                                    <DeleteDialog message="Czy chcesz usunąć użytkownika?" entityName={user.username} id={user.sysuser} url="user"/>
                                 </TableCell>
                                 </TableRow>
                             ))}

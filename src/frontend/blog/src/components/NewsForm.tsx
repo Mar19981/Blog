@@ -9,7 +9,7 @@ import { useFormik } from "formik";
 const validationSchema = yup.object({
     title: yup.string().required("Wpisz tytuł artykułu"),
     content: yup.string().required("Uzupełnij treść artykułu"),
-    newsType: yup.string().required().oneOf(Object.values(NewsType))
+    newsType: yup.number().required().oneOf([1, 2, 3, 4, 5])
 });
 
 const NewsForm = () => {

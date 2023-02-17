@@ -51,7 +51,14 @@ def post_user(db: Session, user: schemas.UserCreate) -> bool:
     db_user.password = user.password
     db_user.name = user.name
     db_user.surname = user.surname
-    
+    match user.type:
+        case 1:
+            db_user.type = models.UserType.admin
+        case 2:
+            db_user.type = models.UserType.editor
+        case 3:
+            db_user.type = models.UserType.standard
+    db_user.type = user.type
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

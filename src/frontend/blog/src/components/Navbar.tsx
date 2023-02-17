@@ -16,10 +16,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import RegisterDialog from "./RegisterDialog";
 import LoginDialog from "./LoginDialog";
+import { useNavigate  } from "react-router-dom";
+import LoggedInDto from "../dtos/LoggedInDto";
 
 interface NavbarProps {
-    logged?: boolean,
-    type?: UserType
+    user: LoggedInDto | null,
+    setUser:  React.Dispatch<React.SetStateAction<LoggedInDto | null>>
 };
 
 interface CategoryLink {
@@ -35,13 +37,17 @@ const categories: Array<CategoryLink> = [
     {name: "Lifestyle", destination: "category/lifestyle"}  
 ];
 
-const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
+const Navbar = ({user, setUser}: NavbarProps) => {
     const [sidebar, setSidebar] = useState<boolean>(false);
     const [anchor, setAnchor] = useState<null | HTMLElement>(null)
-
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => setAnchor(e.currentTarget);
+    const navigate = useNavigate();
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {setAnchor(e.currentTarget);};
     const handleClose = () => setAnchor(null);
-    const handleLogout = () => {};
+    const handleLogout = () => {
+        setSidebar(false);
+        setUser(null);
+        navigate("/");
+    }
 
     const closeSidebar = () =>
         (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -58,7 +64,7 @@ const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
         <>
         <AppBar position="static">
             <Toolbar>
-                {logged &&
+                {user !== null &&
                 <>
                 <Avatar>
                     <IconButton onClick={() => setSidebar(!sidebar)}>
@@ -66,17 +72,17 @@ const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
                     </IconButton>
                 </Avatar>
                 <Typography sx={{ml: 1}}>
-                    User
+                    {user.username}
                 </Typography>
                 </>
                 }
-                {!logged &&                    
+                {user === null &&                    
                     <>
-                    <LoginDialog/>
+                    <LoginDialog setUser={setUser}/>
                     <RegisterDialog/>
                     </>
                 }
-                <Button color="inherit">Blog</Button>
+                <Button color="inherit"><RouterLink to="/" style={{color:"#D6D6D6", textDecoration: "none"}}>Blog</RouterLink></Button>
                 <Button color="inherit"         
                     id="news-button"
                     aria-controls={anchor ? 'news-menu' : undefined}
@@ -91,10 +97,10 @@ const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
         <Drawer anchor="left" open={sidebar} onClose={closeSidebar()}>
             <Box sx={{ width: 250, bgcolor: 'background.paper' }}>
                 <List>
-                    {userProperties[type].navigation?.map((link, index) => (
+                    {userProperties[user !== null ? user.type : UserType.ADMIN].navigation?.map((link, index) => (
                     <ListItem key={link.name}>
                             <ListItemButton onClick={closeSidebar()}>
-                            <RouterLink to={link.destination}>
+                            <RouterLink to={link.destination} style={{color:"#D6D6D6", textDecoration: "none"}}>
                                 <ListItemText primary={link.name}/>
                             </RouterLink>
                             </ListItemButton>
@@ -117,7 +123,7 @@ const Navbar = ({logged = false, type = UserType.STANDARD}: NavbarProps) => {
             >
                 {categories.map((category, index) => {
                     return (<MenuItem onClick={handleClose} key={index}>
-                        <RouterLink to={category.destination}>{category.name}</RouterLink>
+                        <RouterLink to={category.destination} style={{color:"#D6D6D6", textDecoration: "none"}}>{category.name}</RouterLink>
                         </MenuItem>)
                     
                 })}

@@ -2,6 +2,9 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
 import { useFormik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
+import RegisterDto from "../dtos/RegisterDto";
+import UserDto from "../dtos/UserDto";
+import API_SERVER from "../shared/consts";
 import UserType from "../shared/UserType";
 
 const validationSchema = yup.object({
@@ -14,14 +17,16 @@ const validationSchema = yup.object({
     email: yup.string().required().email("Wpisz prawidłowy adres email"),
     firstName: yup.string().required("Wpisz swoje imię"),
     lastName: yup.string().required("Wpisz swoje nazwisko"),
-    userType: yup.string().required().oneOf(Object.values(UserType))
+    userType: yup.number().required().oneOf([1, 2, 3])
 });
 
 interface UpdateUserProps {
     adminView?: boolean;
+    setUser: React.Dispatch<React.SetStateAction<UserDto[]>>,
+    user: UserDto
 }
 
-const UpdateUserDialog = ({adminView=false}: UpdateUserProps) => {
+const UpdateUserDialog = ({adminView=true, setUser, user}: UpdateUserProps) => {
     const [showDialog, setShowDialog] = useState<boolean>(false);
 
     const handleClose = () => { 
@@ -30,15 +35,39 @@ const UpdateUserDialog = ({adminView=false}: UpdateUserProps) => {
     }
     const formik = useFormik({
         initialValues: {
-            username: "",
-            email: "",
-            password: "",
-            firstName: "",
-            lastName: "",
-            userType: UserType.STANDARD
+            username: user.username,
+            email: user.email,
+            password: user.password,
+            firstName: user.name,
+            lastName: user.surname,
+            userType: user.type
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
+            const payload: RegisterDto = {
+                surname: values.lastName, 
+                name: values.firstName, 
+                type: values.userType, 
+                username: values.username,
+                email: values.email,
+                password: values.password
+            };
+            const res = await fetch(`http://${API_SERVER}/user/${user.sysuser}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            console.log(data);
+            user.email = values.email;
+            user.type = values.userType;
+            user.name = values.firstName;
+            user.surname = values.lastName;
+            user.password = values.password;
+            user.username = values.username;
+            setUser((prev) => prev.map((x) => x.sysuser === user.sysuser ? user : x));
             handleClose();
         }
     }
@@ -48,6 +77,7 @@ const UpdateUserDialog = ({adminView=false}: UpdateUserProps) => {
             <Button color="inherit" onClick={() => setShowDialog(true)}>Edytuj</Button>
             <Dialog open={showDialog} onClose={handleClose}>
                 <DialogTitle>Edytuj użytkownika</DialogTitle>
+                <form onSubmit={formik.handleSubmit}>
                 <DialogContent sx={{flex: 1}}>
                     <FormControl>
                         <Stack spacing={2}>
@@ -66,6 +96,7 @@ const UpdateUserDialog = ({adminView=false}: UpdateUserProps) => {
                         </Stack>
                     </FormControl>
                 </DialogContent>
+                </form>
             <DialogActions>
             <Button onClick={handleClose}>Anuluj</Button>
             <Button type="submit">Wyślij</Button>

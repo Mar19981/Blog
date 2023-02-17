@@ -10,7 +10,7 @@ const MainPage = () => {
     useEffect(() => {
         const getArticles = async () => {
           const articlesFromServer = await fetchArticles()
-          setArticles(articlesFromServer.filter((article: ArticleDto) => article.is_active === true))
+          setArticles(articlesFromServer.filter((article: ArticleDto) => article.type === NewsType.SCIENCE && article.is_active === true))
         }
     
         getArticles()
