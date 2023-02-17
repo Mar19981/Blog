@@ -54,7 +54,7 @@ const MyComments = () => {
     return (
         <>
             <Backdrop>
-                <Typography variant="h2" align="center" marginBottom={5}>Użytkownicy</Typography>
+                <Typography variant="h2" align="center" marginBottom={5}>Komentarze</Typography>
                 <TableContainer style={{border: "1px solid #515151"}}>
                     <Table>
                         <TableBody>
